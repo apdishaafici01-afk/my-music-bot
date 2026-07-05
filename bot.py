@@ -4,12 +4,12 @@ from pyrogram import Client, filters
 from pytgcalls import PyTgCalls
 from pytgcalls.types import MediaStream
 
-# Xogta sirta ah ee laga soo akhrinayo Railway variables
+# Xogta sirta ah ee laga soo akhrinayo Kinesis environment variables
 API_ID = int(os.environ.get("API_ID"))
 API_HASH = os.environ.get("API_HASH")
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
-# Habka cusub ee PyTgCalls v3+
+# Habka cusub ee PyTgCalls v3
 app = Client("music_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 call_py = PyTgCalls(app)
 
@@ -24,7 +24,7 @@ async def play_music(client, message):
     await message.reply_text("🔄 Waxaan isku dayayaa inaan ku biiro Call-ka...")
     
     try:
-        # Habka cusub wuxuu isticmaalaa MediaStream
+        # Habka cusub ee v3 wuxuu isticmaalaa call_py.play iyo MediaStream
         await call_py.play(
             chat_id,
             MediaStream(audio_url)
