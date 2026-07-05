@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 
-# 1. Ku rakib FFmpeg iyo aaladaha dhismaha nidaamka
+# Ku rakib FFmpeg iyo aaladaha dhismaha nidaamka
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     build-essential \
@@ -11,11 +11,12 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-# 2. Cusboonaysii pip oo si toos ah u rakib maktabadaha iyadoo aan la isticmaalin requirements.txt
+# Si toos ah u rakib nooca shaqaynaya ee dev-ka ah ee leh tgcalls-ka saxda ah
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir pyrogram==2.0.106 pytgcalls==2.1.0 yt-dlp
+    pip install --no-cache-dir pyrogram==2.0.106 yt-dlp && \
+    pip install --no-cache-dir pytgcalls==3.0.0.dev24
 
-# 3. Ku koobiyeey code-ka bot-ka oo dhan
+# Ku koobiyeey code-ka bot-ka oo dhan
 COPY . .
 
 CMD ["python", "bot.py"]
