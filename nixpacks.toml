@@ -1,9 +1,0 @@
-[providers]
-python = { version = "3.10" }
-
-[phases.setup]
-nixPkgs = ["python310", "ffmpeg", "gcc", "python310Packages.pip"]
-
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
-
