@@ -2,7 +2,7 @@ import asyncio
 import os
 from pyrogram import Client, filters
 from pytgcalls import PyTgCalls
-from pytgcalls.types import AudioPiped
+from pytgcalls.types import AudioStream
 
 # 1. Ka soo rida Variable-ada Kinesis Network
 API_ID = int(os.getenv("API_ID"))
@@ -25,7 +25,7 @@ user = Client(
     session_string=STRING_SESSION
 )
 
-# 3. Ku xidhista Pytgcalls oo xukuma Voice Chat-ka
+# 3. Ku xidhista PyTgCalls oo nidaamsan v3+
 call = PyTgCalls(user)
 
 @bot.on_message(filters.command("start") & filters.private)
@@ -38,29 +38,28 @@ async def start_private(client, message):
 
 @bot.on_message(filters.command("play") & filters.group)
 async def play_audio(client, message):
-    # Link-gan waa muusiko tijaabo ah (Live MP3 stream) si loo hubiyo inuu bot-ku shaqaynayo
+    # Link muusiko tijaabo ah
     test_audio_url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     chat_id = message.chat.id
     
     await message.reply_text("🔄 **Fadlan sug... Waxaan ku biirayaa Voice Chat-ka...**")
 
     try:
-        # Userbot-ka ayaa galaya Voice Chat-ka group-ka si uu muusikada u shido
+        # Habka cusub ee muusikada loo shido v3+
         await call.play(
             chat_id,
-            AudioPiped(test_audio_url)
+            AudioStream(test_audio_url)
         )
         await message.reply_text("▶️ **Bot-ku wuxuu si guul leh u dhex galay Voice Chat-ka, muusikadii tijaabaduna waa ay daarantaa!**")
     except Exception as e:
-        await message.reply_text(f"❌ **Khalad ayaa dhacay markii la isku dayay in la galo Call-ka:**\n`{str(e)}`")
+        await message.reply_text(f"❌ **Aniga iyo Call-ka ma is heli weynay:**\n`{str(e)}`")
 
 async def main():
-    # Shidista adeegyada oo dhan isku mara
     await bot.start()
     await user.start()
     await call.start()
     print("---------------------------------------")
-    print("🔥 BOT-KII IYO USERBOT-KII WAA ONLINE OOH! 🔥")
+    print("🔥 BOT-KII WAA ONLINE BILAA ERROR! 🔥")
     print("---------------------------------------")
     await asyncio.Event().wait()
 
