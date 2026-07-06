@@ -1,8 +1,1 @@
-pyrogram==2.0.106
-tgcrypto
-pytgcalls
-yt-dlp
-aiohttp
-python-dotenv
-ffmpeg-python
-requests
+pytgcalls==1.0.0
