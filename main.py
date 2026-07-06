@@ -1,7 +1,8 @@
-from pyrogram import Client
+from pyrogram import Client, idle
 from pytgcalls import PyTgCalls
 import config
 
+# Bot-ka (wuxuu maamulaa commands sida /play /skip)
 app = Client(
     "music_bot",
     api_id=config.API_ID,
@@ -9,12 +10,21 @@ app = Client(
     bot_token=config.BOT_TOKEN
 )
 
-call_py = PyTgCalls(app)
+# Userbot-ka (kani ayaa runtii ku biiraya Voice Chat-ka)
+assistant = Client(
+    "assistant",
+    api_id=config.API_ID,
+    api_hash=config.API_HASH,
+    session_string=config.SESSION_STRING
+)
+
+call_py = PyTgCalls(assistant)
 
 if __name__ == "__main__":
-    print("Bot is starting...")
+    print("Starting bot...")
     app.start()
+    print("Starting assistant...")
+    assistant.start()
     call_py.start()
-    print("Bot started successfully!")
-    from pyrogram import idle
+    print("Bot iyo Assistant labaduba way shaqeynayaan!")
     idle()
