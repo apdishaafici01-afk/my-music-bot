@@ -1,8 +1,18 @@
 import asyncio
 import os
 from pyrogram import Client, filters
-from pytgcalls import PyTgCalls
-from pytgcalls.types import AudioStream
+
+# Dynamic Import si looga fogaado nooc kasta oo ImportError ah
+try:
+    from pytgcalls import PyTgCalls
+    from pytgcalls.types import AudioStream
+except ImportError:
+    try:
+        from pytgcalls import PyTgCalls
+        from pytgcalls.types import AudioVideoPiped as AudioStream
+    except ImportError:
+        from pytgcalls import PyTgCalls
+        from pytgcalls.types.stream import AudioStream
 
 # 1. Ka soo rida Variable-ada Kinesis Network
 API_ID = int(os.getenv("API_ID"))
@@ -10,7 +20,7 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 STRING_SESSION = os.getenv("STRING_SESSION")
 
-# 2. Shidista Client-yada (Bot iyo Userbot)
+# 2. Shidista Client-yada
 bot = Client(
     name="MusicBot",
     api_id=API_ID,
@@ -25,7 +35,6 @@ user = Client(
     session_string=STRING_SESSION
 )
 
-# 3. Ku xidhista PyTgCalls oo nidaamsan v3+
 call = PyTgCalls(user)
 
 @bot.on_message(filters.command("start") & filters.private)
@@ -33,19 +42,17 @@ async def start_private(client, message):
     await message.reply_text(
         f"Haye {message.from_user.mention}!\n\n"
         "Waxaan ahay Music Bot Voice Chat ah. 🎧\n"
-        "Ku dar group-kaaga ka dibna isticmaal amarka `/play` si aad ii tijaabiso."
+        "Ku dar group-kaaga ka dibna isticmaal amarka `/play`."
     )
 
 @bot.on_message(filters.command("play") & filters.group)
 async def play_audio(client, message):
-    # Link muusiko tijaabo ah
     test_audio_url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     chat_id = message.chat.id
     
     await message.reply_text("🔄 **Fadlan sug... Waxaan ku biirayaa Voice Chat-ka...**")
 
     try:
-        # Habka cusub ee muusikada loo shido v3+
         await call.play(
             chat_id,
             AudioStream(test_audio_url)
