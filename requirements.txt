@@ -1,1 +1,4 @@
-pytgcalls==1.0.0
+pyrogram==2.0.106
+tgcrypto==1.2.5
+pytgcalls==1.1.5
+yt-dlp
