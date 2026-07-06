@@ -1,18 +1,7 @@
 import asyncio
 import os
 from pyrogram import Client, filters
-
-# Dynamic Import si looga fogaado nooc kasta oo ImportError ah
-try:
-    from pytgcalls import PyTgCalls
-    from pytgcalls.types import AudioStream
-except ImportError:
-    try:
-        from pytgcalls import PyTgCalls
-        from pytgcalls.types import AudioVideoPiped as AudioStream
-    except ImportError:
-        from pytgcalls import PyTgCalls
-        from pytgcalls.types.stream import AudioStream
+from pytgcalls import GroupCallFactory
 
 # 1. Ka soo rida Variable-ada Kinesis Network
 API_ID = int(os.getenv("API_ID"))
@@ -20,7 +9,7 @@ API_HASH = os.getenv("API_HASH")
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 STRING_SESSION = os.getenv("STRING_SESSION")
 
-# 2. Shidista Client-yada
+# 2. Shidista Client-yada (Bot iyo Userbot)
 bot = Client(
     name="MusicBot",
     api_id=API_ID,
@@ -35,7 +24,9 @@ user = Client(
     session_string=STRING_SESSION
 )
 
-call = PyTgCalls(user)
+# 3. Qaabka cusub ee Pytgcalls v3 loogu xidho Userbot-ka
+group_call_factory = GroupCallFactory(user)
+call = group_call_factory.get_group_call()
 
 @bot.on_message(filters.command("start") & filters.private)
 async def start_private(client, message):
@@ -47,16 +38,16 @@ async def start_private(client, message):
 
 @bot.on_message(filters.command("play") & filters.group)
 async def play_audio(client, message):
+    # Link muusiko tijaabo ah
     test_audio_url = "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
     chat_id = message.chat.id
     
     await message.reply_text("🔄 **Fadlan sug... Waxaan ku biirayaa Voice Chat-ka...**")
 
     try:
-        await call.play(
-            chat_id,
-            AudioStream(test_audio_url)
-        )
+        # Habka v3 ee loogu ku biiro lana dhex rido muusikada
+        await call.join(chat_id)
+        await call.start_audio(test_audio_url)
         await message.reply_text("▶️ **Bot-ku wuxuu si guul leh u dhex galay Voice Chat-ka, muusikadii tijaabaduna waa ay daarantaa!**")
     except Exception as e:
         await message.reply_text(f"❌ **Aniga iyo Call-ka ma is heli weynay:**\n`{str(e)}`")
@@ -64,9 +55,9 @@ async def play_audio(client, message):
 async def main():
     await bot.start()
     await user.start()
-    await call.start()
+    # Pytgcalls v3 uma baahna call.start(), wuxuu ku bilaabmaa join-ka kor ku qoran
     print("---------------------------------------")
-    print("🔥 BOT-KII WAA ONLINE BILAA ERROR! 🔥")
+    print("🔥 BOT-KII WAA ONLINE v3 LA JAANQAADAY! 🔥")
     print("---------------------------------------")
     await asyncio.Event().wait()
 
